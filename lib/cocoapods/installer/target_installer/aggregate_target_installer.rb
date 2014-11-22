@@ -124,7 +124,11 @@ module Pod
         frameworks_by_config = {}
         target.user_build_configurations.keys.each do |config|
           frameworks_by_config[config] = target.pod_targets.select do |pod_target|
-            pod_target.include_in_build_config?(config)
+            if !pod_target.requires_framework?
+              false
+            else
+              pod_target.include_in_build_config?(config)
+            end
           end.map(&:product_name)
         end
         generator = Generator::EmbedFrameworksScript.new(target_definition, frameworks_by_config)

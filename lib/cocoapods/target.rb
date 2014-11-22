@@ -97,6 +97,17 @@ module Pod
     #       fetched.
     #
     def requires_framework?
+      if specs.size == 1
+        begin
+          h = specs[0].attributes_hash
+          if h['osx']['vendored_frameworks'].size > 1
+            # puts self.inspect
+            return false
+          end
+        rescue Exception => e
+        end
+      end
+
       host_requires_framework? || uses_swift?
     end
 
